@@ -1,8 +1,10 @@
 import React from 'react';
 
 const words = [
-    "词语1",
-    "词语2"
+    "词语",
+    "天气预报",
+    "这是个橘子",
+    "成语接龙",
 ];
 
 class Game extends React.Component {
@@ -12,22 +14,31 @@ class Game extends React.Component {
             number: 0,
             charCount: 0,
             word: '',
-            toggle: true
+            toggle: false,
+            consumedWords: [],
         };
 
         this.randomWord = this.randomWord.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.showWord = this.showWord.bind(this);
-        this.numbers = words.length;
     }
 
     randomWord() {
-        var randomIndex = Math.floor(Math.random() * this.numbers);
-        var theWord = words[randomIndex];
+        var { randomIndex, theWord } = this.findRandomWord();
+        this.state.consumedWords.push(theWord);
         this.setState({ number: randomIndex + 1, charCount: theWord.length, word: theWord, toggle: !this.state.toggle });
-        console.log(this.state.number);
-        console.log(theWord);
 
+    }
+
+    noWordsLeft() {
+        return words.length === this.state.consumedWords.length;
+    }
+
+    findRandomWord() {
+        var randomIndex = Math.floor(Math.random() * words.length);
+        const leftWords = words.filter(x => !this.state.consumedWords.includes(x));
+        var theWord = leftWords[randomIndex % leftWords.length];
+        return { randomIndex, theWord };
     }
 
     showWord() {
@@ -43,6 +54,12 @@ class Game extends React.Component {
         console.log(theNumber);
     }
 
+    resetGame() {
+        this.setState({ toggle: false, consumedWords: [], word: ''}
+        );
+
+    }
+
     render() {
         return (
             <div className="game" >
@@ -54,16 +71,17 @@ class Game extends React.Component {
                 <div id="content-desktop">
 
                     <div className="buttons">
-                        <button className={"random-toggle-" + this.state.toggle} onClick={() => this.showWord()}>显示谜底</button>
-                        <button className={"word-toggle-" + this.state.toggle} onClick={() => this.randomWord()}>随机抽词</button>
+                        <button className={this.state.toggle ? "show-random-toggle" : "hide-random-toggle"} onClick={() => this.showWord()}>显示谜底</button>
+                        <button className={this.state.toggle || this.noWordsLeft() ? "hide-word-toggle" : "show-word-toggle"} onClick={() => this.randomWord()}>随机抽词</button>
+                        <button className={this.noWordsLeft() && !this.state.toggle ? "show-reset-toggle" : "hide-reset-toggle"} onClick={() => this.resetGame()}>再来一次</button>
                     </div>
 
-                    <div className={"show random-toggle-" + this.state.toggle}>
+                    <div className={this.state.toggle ? "show show-random-toggle" : "show hide-random-toggle"}>
                         <div id="no">  序号：{this.state.number}  </div>
                         <div id="char-count">  {this.state.charCount} 个字</div>
                     </div>
 
-                    <div className={"word word-toggle-" + this.state.toggle}> {this.state.word}</div>
+                    <div className={this.state.toggle ? "word hide-word-toggle" : "word show-word-toggle"}> {this.state.word}</div>
                 </div>
 
                 <div id="content-mobile">

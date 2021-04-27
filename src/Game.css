@@ -26,10 +26,12 @@ button {
 }
 
 #content-mobile {display: none;}
-.word-toggle-true {display:block}
-.word-toggle-false {display:none;}
-.random-toggle-true {display:none}
-.random-toggle-false {display:block;}
+.show-word-toggle {display:block}
+.hide-word-toggle {display:none}
+.show-random-toggle {display:block;}
+.hide-random-toggle {display:none;}
+.show-reset-toggle {display:block;}
+.hide-reset-toggle {display:none;}
 
 @media screen and (max-width: 768px) {
 
